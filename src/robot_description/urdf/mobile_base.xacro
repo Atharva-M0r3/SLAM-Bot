@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<robot name="robot" xmlns:xacro="https://www.ros.org/wiki/xacro">
+    <!-- Property (Xacro Variable). -->
+    <xacro:property name="base_length" value="0.6" />
+    <xacro:property name="base_width" value="0.4" />
+    <xacro:property name="base_height" value="0.2" />
+    <xacro:property name="wheel_radius" value="0.1" />
+    <xacro:property name="wheel_length" value="0.05" />
+
+    <!-- Base Footprint. -->
+    <link name="base_footprint" />
+
+    <!-- Base Link. -->
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="${base_length} ${base_width} ${base_height}" />
+            </geometry>
+            <origin xyz="0 0 ${(base_height / 2.0)}" rpy="0 0 0" />
+            <material name="Blue" />
+        </visual>
+
+        <!-- Collision Tag for Base Link. -->
+        <collision>
+            <geometry>
+                <box size="${base_length} ${base_width} ${base_height}" />
+            </geometry>
+            <origin xyz="0 0 ${(base_height / 2.0)}" rpy="0 0 0" />
+        </collision>
+
+        <!-- Macro (Xacro Function) for Base Link Inertial Tag. -->
+        <xacro:base_link_inertia 
+            m="5.0"
+            x="${base_length}"
+            y="${base_width}"
+            z="${base_height}"
+            xyz="0 0 ${(base_height / 2.0)}"
+            rpy="0 0 0" />
+    </link>
+
+    <!-- Base Footprint Joint. -->
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_footprint" />
+        <child link="base_link" />
+        <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0" />
+    </joint>
+
+    <!-- Macro (Xacro Function) for Wheel Links. -->
+    <xacro:macro name="wheel_link" params="prefix">
+        <link name="${prefix}_wheel_link">
+            <visual>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+                </geometry>
+                <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0" />
+                <material name="Gray" />
+            </visual>
+
+            <!-- Collision Tag for Wheel Links. -->
+            <collision>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_length}" />
+                </geometry>
+                <origin xyz="0 0 0" rpy="${pi / 2.0} 0 0" />
+            </collision>
+
+            <!-- Xacro (Macro Function) for Wheel Link Inertial Tags. -->
+            <xacro:wheel_link_inertia 
+                m="1.0"
+                r="${wheel_radius}"
+                l="${wheel_length}"
+                xyz="0 0 0"
+                rpy="${pi / 2.0} 0 0" />
+        </link>
+    </xacro:macro>
+
+    <!-- Right Wheel Link. -->
+    <xacro:wheel_link prefix="right" />
+
+    <!-- Base Right Wheel Joint. -->
+    <joint name="base_right_wheel_joint" type="continuous">
+        <parent link="base_link" />
+        <child link="right_wheel_link" />
+        <origin xyz="${-(base_length / 4.0)} ${-(base_width + wheel_length) / 2.0} 0" rpy="0 0 0" />
+        <axis xyz="0 1 0" />
+    </joint>
+
+    <!-- Left Wheel Link. -->
+    <xacro:wheel_link prefix="left" />
+
+    <!-- Base Left Wheel Joint. -->
+    <joint name="base_left_wheel_joint" type="continuous">
+        <parent link="base_link" />
+        <child link="left_wheel_link" />
+        <origin xyz="${-(base_length / 4.0)} ${(base_width + wheel_length) / 2.0} 0" rpy="0 0 0" />
+        <axis xyz="0 1 0" />
+    </joint>
+
+    <!-- Caster Wheel Link. -->
+    <link name="caster_wheel_link">
+        <visual>
+            <geometry>
+                <sphere radius="${(wheel_radius / 2.0)}" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <material name="Gray" />
+        </visual>
+
+        <!-- Collision Tag for Caster Wheel Link. -->
+        <collision>
+            <geometry>
+                <sphere radius="${(wheel_radius / 2.0)}" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+        </collision>
+
+        <!-- Xacro (Macro Function) for Caster Wheel Inertial Tag. -->
+        <xacro:caster_wheel_link_inertia 
+            m="0.5"
+            r="${(wheel_radius / 2.0)}"
+            xyz="0 0 0"
+            rpy="0 0 0" />
+    </link>
+
+    <!-- Base Caster Wheel Joint. -->
+    <joint name="base_caster_wheel_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="caster_wheel_link" />
+        <origin xyz="${(base_length / 3.0)} 0 ${-(wheel_radius / 2.0)}" rpy="0 0 0" />
+    </joint>
+</robot>

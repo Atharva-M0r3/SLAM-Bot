@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="https://www.ros.org/wiki/xacro">
+    <!-- Material Tags. -->
+    <material name="Red">
+        <color rgba="1 0 0 0.5" />
+    </material>
+
+    <material name="Green">
+        <color rgba="0 1 0 0.5" />
+    </material>
+
+    <material name="Blue">
+        <color rgba="0 0 1 0.5" />
+    </material>
+
+    <material name="Gray">
+        <color rgba="0.5 0.5 0.5 0.5" />
+    </material>
+
+    <!-- Macro (Xacro Function) for Base Link Inertial Tag. -->
+    <xacro:macro name="base_link_inertia" params="m x y z xyz rpy">
+        <inertial>
+            <mass value="${m}" />
+            <origin xyz="${xyz}" rpy="${rpy}" />
+            <inertia ixx="${(m / 12) * (y * y + z * z)}" ixy="0" ixz="0"
+                     iyy="${(m / 12) * (x * x + z * z)}" iyz="0"
+                     izz="${(m / 12) * (x * x + y * y)}" />
+        </inertial>
+    </xacro:macro>
+
+    <!-- Macro (Xacro Function) for Wheel Link Inertial Tag. -->
+    <xacro:macro name="wheel_link_inertia" params="m r l xyz rpy">
+        <inertial>
+            <mass value="${m}" />
+            <origin xyz="${xyz}" rpy="${rpy}" />
+            <inertia ixx="${(m / 12) * ((3 * r * r) + (l * l))}" ixy="0" ixz="0"
+                     iyy="${(m / 12) * ((3 * r * r) + (l * l))}" iyz="0"
+                     izz="${(0.5 * m * r * r)}" />
+        </inertial>
+    </xacro:macro>
+
+    <!-- Macro (Xacro Function) for Caster Wheel Link Inertial Tag. -->
+    <xacro:macro name="caster_wheel_link_inertia" params="m r xyz rpy">
+        <inertial>
+            <mass value="${m}" />
+            <origin xyz="${xyz}" rpy="${rpy}" />
+            <inertia ixx="${(2 / 5) * (m * r * r)}" ixy="0" ixz="0"
+                     iyy="${(2 / 5) * (m * r * r)}" iyz="0"
+                     izz="${(2 / 5) * (m * r * r)}" />
+        </inertial>
+    </xacro:macro>
+</robot>   
